@@ -1,0 +1,320 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ profile.name }} — {{ profile.role }}</title>
+<meta name="description" content="{{ profile.tagline }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'portfolio/css/style.css' %}">
+</head>
+<body>
+
+<button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+  <span></span><span></span><span></span>
+</button>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <img class="avatar" src="{% static 'portfolio/img/profile.jpg' %}" alt="{{ profile.name }}">
+    <h1 class="sidebar-name">{{ profile.name }}</h1>
+    <p class="sidebar-role">{{ profile.role }}</p>
+    <p class="sidebar-location">{{ profile.location }}</p>
+  </div>
+
+  <nav class="side-nav" aria-label="Section navigation">
+    <ul>
+      {% for id, label in nav_sections %}
+      <li><a href="#{{ id }}" class="side-nav-link" data-section="{{ id }}">{{ label }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="{% url 'download_resume' %}" target="_blank" class="btn btn-ghost btn-small">Resume ↓</a>
+    <div class="social-row">
+      <a href="{{ profile.github }}" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
+      <a href="{{ profile.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn">LinkedIn</a>
+    </div>
+  </div>
+</aside>
+
+<main class="content">
+
+  <!-- HOME / HERO -->
+  <section id="home" class="section hero-section">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Portfolio</p>
+        <h2 class="hero-headline">
+          Hey iam Fullstack Developer,<br>then make it look right up front.
+        </h2>
+        <p class="hero-tagline">{{ profile.tagline }}</p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">See my projects</a>
+          <a href="#contact" class="btn btn-outline">Get in touch</a>
+        </div>
+        <div class="hero-stack">
+          <span>Python</span><span>Django</span><span>DRF</span><span>React</span><span>MySQL</span> <span>Html</span> <span>Css</span>
+        </div>
+      </div>
+      <div class="hero-photo-wrap">
+        <img class="hero-photo" src="{% static 'portfolio/img/profile.jpg' %}" alt="Portrait of {{ profile.name }}">
+        <div class="hero-photo-tag">
+          <span class="dot"></span> Currently interning as a Fullstack Developer
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <h3 class="section-title">About</h3>
+    <p class="about-text">{{ profile.about }}</p>
+    <div class="about-facts">
+      <div>
+        <span class="fact-num">{{ projects|length }}</span>
+        <span class="fact-label">Projects shipped</span>
+      </div>
+      <div>
+        <span class="fact-num">8.35</span>
+        <span class="fact-label">Current CGPA</span>
+      </div>
+      <div>
+        <span class="fact-num">2027</span>
+        <span class="fact-label">Graduating year</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education" class="section">
+    <h3 class="section-title">Education</h3>
+    <div class="timeline">
+      {% for edu in education %}
+      <div class="timeline-row">
+        <div class="timeline-period">{{ edu.period }}</div>
+        <div class="timeline-body">
+          <h4>{{ edu.school }}</h4>
+          <p class="timeline-degree">{{ edu.degree }}</p>
+          <p class="timeline-meta">{{ edu.meta }} &middot; {{ edu.location }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h4 class="sub-heading">Coursework</h4>
+    <ul class="chip-row">
+      {% for course in coursework %}
+      <li class="chip">{{ course }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="section">
+    <h3 class="section-title">Skills</h3>
+    <div class="skills-grid">
+      {% for group, items in skills.items %}
+      <div class="skill-group">
+        <h4>{{ group }}</h4>
+        <ul class="chip-row">
+          {% for item in items %}
+          <li class="chip chip-mono">{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section">
+    <h3 class="section-title">Projects</h3>
+    <div class="project-list">
+      {% for project in projects %}
+      <article class="project-row accent-{{ project.accent }}">
+        <div class="project-visual">
+          <div class="browser-frame">
+            <div class="browser-dots"><span></span><span></span><span></span></div>
+            {% if project.screenshot %}
+            <div class="browser-body browser-body-img">
+              <img src="{% static project.screenshot %}" alt="Screenshot of {{ project.name }}">
+            </div>
+            {% else %}
+            <div class="browser-body">
+              <span class="browser-glyph">{{ project.tag|slice:":2"|upper }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-heading-row">
+            <h4>{{ project.name }}</h4>
+            <span class="project-tag">{{ project.tag }}</span>
+          </div>
+          <p class="project-period">{{ project.period }}</p>
+          <p class="project-desc">{{ project.description }}</p>
+          <ul class="project-highlights">
+            {% for point in project.highlights %}
+            <li>{{ point }}</li>
+            {% endfor %}
+          </ul>
+          <ul class="chip-row">
+            {% for tech in project.stack %}
+            <li class="chip chip-mono chip-small">{{ tech }}</li>
+            {% endfor %}
+          </ul>
+          {% if project.github or project.live %}
+          <div class="project-links">
+            {% if project.github %}
+            <a href="{{ project.github }}" target="_blank" rel="noopener" class="btn btn-outline btn-small">GitHub ↗</a>
+            {% endif %}
+            {% if project.live %}
+            <a href="{{ project.live }}" target="_blank" rel="noopener" class="btn btn-primary btn-small">Live demo ↗</a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="section">
+    <h3 class="section-title">Experience</h3>
+    <div class="timeline">
+      {% for job in experience %}
+      <div class="timeline-row">
+        <div class="timeline-period">{{ job.period }}</div>
+        <div class="timeline-body">
+          <h4>{{ job.role }}</h4>
+          <p class="timeline-degree">{{ job.org }} &middot; {{ job.location }}</p>
+          <ul class="project-highlights">
+            {% for point in job.points %}
+            <li>{{ point }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications" class="section">
+    <h3 class="section-title">Certifications</h3>
+    <div class="cert-list">
+      {% for cert in certifications %}
+      <div class="cert-row">
+        {% if cert.image %}
+        <a href="{% static cert.image %}" target="_blank" rel="noopener" class="cert-thumb-link">
+          <img class="cert-thumb" src="{% static cert.image %}" alt="{{ cert.title }} certificate">
+        </a>
+        {% else %}
+        <span class="cert-mark">✓</span>
+        {% endif %}
+        <div>
+          <h4>{{ cert.title }}</h4>
+          <p class="timeline-degree">{{ cert.issuer }}</p>
+          {% if cert.meta %}<p class="timeline-meta">{{ cert.meta }}</p>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ACHIEVEMENTS -->
+  <section id="achievements" class="section">
+    <h3 class="section-title">Achievements &amp; Extracurricular</h3>
+    <div class="timeline">
+      {% for item in achievements %}
+      <div class="timeline-row">
+        <div class="timeline-period">{{ item.period }}</div>
+        <div class="timeline-body">
+          <h4>{{ item.title }}</h4>
+          <p class="timeline-degree">{{ item.role }} &middot; {{ item.location }}</p>
+          <p class="project-desc">{{ item.description }}</p>
+          {% if item.image %}
+          <a href="{% static item.image %}" target="_blank" rel="noopener" class="achievement-cert-link">
+            <img class="achievement-cert" src="{% static item.image %}" alt="{{ item.title }} certificate">
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- RESUME -->
+  <section id="resume" class="section">
+    <h3 class="section-title">Resume</h3>
+    <div class="resume-card">
+      <div>
+        <h4>{{ profile.name }} — Resume</h4>
+        <p class="timeline-meta">One-page PDF, updated for the current internship and project list.</p>
+      </div>
+      <div class="resume-actions">
+        <a href="{% url 'download_resume' %}" target="_blank" class="btn btn-primary">View resume</a>
+        <a href="{% url 'download_resume' %}" download class="btn btn-outline">Download PDF</a>
+      </div>
+    </div>
+    <div class="resume-embed">
+      <embed src="{% static 'portfolio/resume/Sk_Sabir_Raja_Resume.pdf' %}" type="application/pdf" />
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <h3 class="section-title">Contact</h3>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p>Have a project in mind, an internship opening, or just want to talk Django? My inbox is open.</p>
+        <ul class="contact-details">
+          <li><span>Email</span><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></li>
+          <li><span>Phone</span><a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></li>
+          <li><span>GitHub</span><a href="{{ profile.github }}" target="_blank" rel="noopener">{{ profile.github_label }}</a></li>
+          <li><span>LinkedIn</span><a href="{{ profile.linkedin }}" target="_blank" rel="noopener">{{ profile.linkedin_label }}</a></li>
+        </ul>
+      </div>
+
+      {% if messages %}
+      <div class="form-messages">
+        {% for message in messages %}
+          <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form class="contact-form" method="post" action="{% url 'contact_submit' %}">
+        {% csrf_token %}
+        <label>
+          Name
+          <input type="text" name="name" required placeholder="Your name">
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" required placeholder="you@example.com">
+        </label>
+        <label>
+          Message
+          <textarea name="message" rows="4" required placeholder="What's on your mind?"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>Built by {{ profile.name }} — Django backend, hand-written HTML/CSS/JS front end.</p>
+  </footer>
+
+</main>
+
+<script src="{% static 'portfolio/js/main.js' %}"></script>
+</body>
+</html>
